@@ -16,36 +16,43 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/shopping-lists")
+//@RequestMapping(value = "/shopping-lists")
 public class ShoppingListController {
 
-    @PostMapping
+    @PostMapping(value="/shopping-lists")
     @ResponseStatus(HttpStatus.CREATED)
     public ShoppingListResource createShopList(@RequestBody String name) {
-        ShoppingListResource newShopList = new ShoppingListResource();
-        newShopList.setShoppingListId(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"));
-        newShopList.setName(name);
+        ShoppingListResource newShopList = newShopList(name);
 
         return newShopList;
     }
 
-    @PostMapping(value = "/{shopListId}/cocktails")
+    @PostMapping(value = "/shopping-lists/{shopListId}/cocktails")
+    @ResponseStatus(HttpStatus.CREATED)
     public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId,@RequestBody ArrayList<CocktailId> cocktailId){
         return cocktailId;
     }
 
-    @GetMapping(value = "/{shopListId}")
+    @GetMapping(value = "/shopping-lists/{shopListId}")
     public ShoppingListResource getShopList(@PathVariable("shopListId") UUID shopListID) {
 
         return getDummyShopList(shopListID);
 
     }
 
-    @GetMapping
+    @GetMapping(value="/shopping-lists")
     public List<ShoppingListResource> getAllShoppingLists() {
 
         return getAllDummyShoppingLists();
 
+    }
+
+    public ShoppingListResource newShopList(String name){
+        ShoppingListResource shoppingList = new ShoppingListResource();
+        shoppingList.setShoppingListId(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"));
+        shoppingList.setName(name);
+
+        return shoppingList;
     }
 
     public ShoppingListResource getDummyShopList(UUID shoppingListId){
@@ -63,9 +70,5 @@ public class ShoppingListController {
                 new ShoppingListResource(UUID.fromString("6c7d09c2-8a25-4d54-a979-25ae779d2465"),"My birthday",
                         Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao")));
     }
-
- /*   public List<CocktailId> dummyCocktailIds(ArrayList<CocktailId> cocktailId) {
-        return new CocktailId(UUID.fromString("23b3d85a-3928-41c0-a533-6538a71e17c4"));
-    }*/
 
 }

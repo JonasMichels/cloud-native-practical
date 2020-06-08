@@ -13,6 +13,11 @@ public class ShoppingListResource {
     public ShoppingListResource() {
     }
 
+    public ShoppingListResource (UUID shoppingListId, String name) {
+        this.shoppingListId = shoppingListId;
+        this.name = name;
+    }
+
 
     public ShoppingListResource (UUID shoppingListId, String name, List<String> ingredients) {
         this.shoppingListId = shoppingListId;
