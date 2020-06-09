@@ -30,8 +30,8 @@ public class ShoppingListController {
 
     @PostMapping(value = "/shopping-lists/{shopListId}/cocktails")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId,@RequestBody List<CocktailId> cocktailId){
-        return cocktailId;
+    public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId, @RequestBody List<CocktailId> cocktailIds){
+        return cocktailIds;
     }
 
     @GetMapping(value = "/shopping-lists/{shopListId}")
@@ -65,13 +65,16 @@ public class ShoppingListController {
     }
 
     public List<ShoppingListResource> getAllDummyShoppingLists(){
+        List<ShoppingListResource> shoppingList = new ArrayList<>();
         ShoppingListResource shopList1 = new ShoppingListResource("List 1");
         shopList1.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
+        shoppingList.add(shopList1);
 
         ShoppingListResource shopList2 = new ShoppingListResource("List 2");
         shopList2.setIngredients(Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao"));
+        shoppingList.add(shopList2);
 
-        return Arrays.asList(shopList1, shopList2);
+        return shoppingList;
     }
 
 }

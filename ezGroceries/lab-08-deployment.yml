@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-info
+  labels:
+    app: container-info
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-info
+  template:
+    metadata:
+      labels:
+        app: container-info
+    spec:
+      containers:
+        - name: container-info
+          image: gluobe/container-info:variable
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: container-info-env
