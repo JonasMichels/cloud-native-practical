@@ -4,13 +4,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailId;
-import com.ezgroceries.shoppinglist.cocktail.resources.Ingredient;
+import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingList;
+import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
-import com.ezgroceries.shoppinglist.shoppingList.resources.ShoppingListResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,9 +36,9 @@ public class ShoppingListControllerTest {
 
     @Test
     public void createShoppingList() throws Exception{
-        ShoppingListResource shopList = new ShoppingListResource(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"),"My List");
+        ShoppingListResource shopList = new ShoppingListResource("My List");
 
-        given(shoppingListController.createShopList(any(String.class)))
+        given(shoppingListController.createShopList(any(ShoppingList.class)))
                 .willReturn(shopList);
 
         mockMvc.perform(post("/shopping-lists")
@@ -47,22 +46,20 @@ public class ShoppingListControllerTest {
                     .content(asJsonString(shopList)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("shoppingListId").value("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"))
                 .andExpect(jsonPath("name").value("My List"));
 
-        verify(shoppingListController).createShopList(any(String.class));
+        verify(shoppingListController).createShopList(any(ShoppingList.class));
 
     }
 
     @Test
     public void showAllLists() throws Exception {
         List<ShoppingListResource> shopList = new ArrayList<>();
-        ShoppingListResource listSteph = new ShoppingListResource(UUID.fromString("4ba92a46-1d1b-4e52-8e38-13cd56c7224c"),
-                "Stephanie's birthday",
-                Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
+        ShoppingListResource listSteph = new ShoppingListResource("Stephanie's birthday");
+        listSteph.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
         shopList.add(listSteph);
-        ShoppingListResource listTwo = new ShoppingListResource(UUID.fromString("6c7d09c2-8a25-4d54-a979-25ae779d2465"),"My birthday",
-                Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao"));
+        ShoppingListResource listTwo = new ShoppingListResource("My birthday");
+        listTwo.setIngredients(Arrays.asList("Fanta", "Cola", "7up", "Lemon juice", "Blue Curacao"));
         shopList.add(listTwo);
 
         given(shoppingListController.getAllShoppingLists())
@@ -79,18 +76,18 @@ public class ShoppingListControllerTest {
 
     @Test
     public void getOneList() throws Exception {
-        ShoppingListResource listSteph = new ShoppingListResource(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"),"Stephanie's birthday",
-                Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
+        ShoppingListResource listSteph = new ShoppingListResource("Stephanie's birthday");
+        listSteph.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
 
         given(shoppingListController.getShopList(any(UUID.class)))
                 .willReturn(listSteph);
 
-        mockMvc.perform(get("/shopping-lists/{shopListId}",UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"))
+        mockMvc.perform(get("/shopping-lists/{shopListId}",UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(listSteph)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("shoppingListId").value("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"))
+                .andExpect(jsonPath("shoppingListId").exists())
                 .andExpect(jsonPath("name").value("Stephanie's birthday"))
                 .andExpect(jsonPath("ingredients").exists());
 
@@ -104,13 +101,17 @@ public class ShoppingListControllerTest {
         first.setCocktailId(UUID.fromString("eb99bb7c-61f3-4c9f-981c-55b1b8ee8915"));
         cocktailIds.add(first);
 
+        given(shoppingListController.addCocktailstoShopList(any(UUID.class),cocktailIds))
+            .willReturn(cocktailIds);
 
-        mockMvc.perform(post("/shopping-lists/{shopListId}/cocktails/",UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"))
+        mockMvc.perform(post("/shopping-lists/{shopListId}/cocktails/",UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(cocktailIds)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("cocktailId").exists());
+
+        verify(shoppingListController).addCocktailstoShopList(any(UUID.class),cocktailIds);
     }
 
 

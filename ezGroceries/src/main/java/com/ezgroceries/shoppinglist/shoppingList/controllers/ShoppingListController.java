@@ -1,7 +1,8 @@
 package com.ezgroceries.shoppinglist.shoppingList.controllers;
 
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailId;
-import com.ezgroceries.shoppinglist.shoppingList.resources.ShoppingListResource;
+import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingList;
+import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,25 +17,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//@RequestMapping(value = "/shopping-lists")
+@RequestMapping(produces = "application/json")
 public class ShoppingListController {
 
     @PostMapping(value="/shopping-lists")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingListResource createShopList(@RequestBody String name) {
-        ShoppingListResource newShopList = newShopList(name);
+    public ShoppingListResource createShopList(@RequestBody ShoppingList shoppingList) {
+        ShoppingListResource newShopList = newShopList(shoppingList.getName());
 
         return newShopList;
     }
 
     @PostMapping(value = "/shopping-lists/{shopListId}/cocktails")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId,@RequestBody ArrayList<CocktailId> cocktailId){
+    public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId,@RequestBody List<CocktailId> cocktailId){
         return cocktailId;
     }
 
     @GetMapping(value = "/shopping-lists/{shopListId}")
-    public ShoppingListResource getShopList(@PathVariable("shopListId") UUID shopListID) {
+    public ShoppingList getShopList(@PathVariable("shopListId") UUID shopListID) {
 
         return getDummyShopList(shopListID);
 
@@ -48,27 +49,29 @@ public class ShoppingListController {
     }
 
     public ShoppingListResource newShopList(String name){
-        ShoppingListResource shoppingList = new ShoppingListResource();
-        shoppingList.setShoppingListId(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"));
+        ShoppingListResource shoppingList = new ShoppingListResource(name);
+        shoppingList.setShoppingListId("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915");
         shoppingList.setName(name);
 
         return shoppingList;
     }
 
     public ShoppingListResource getDummyShopList(UUID shoppingListId){
-        return new ShoppingListResource(
-                shoppingListId,
-                "Stephanie's birthday",
-                Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
+        ShoppingListResource oneShopList = new ShoppingListResource("Stephanie's birthday");
+        oneShopList.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Cola Zero"));
+        return oneShopList;
+
+
     }
 
     public List<ShoppingListResource> getAllDummyShoppingLists(){
-        return Arrays.asList(new ShoppingListResource(
-                UUID.fromString("4ba92a46-1d1b-4e52-8e38-13cd56c7224c"),
-                "Stephanie's birthday",
-                Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao")),
-                new ShoppingListResource(UUID.fromString("6c7d09c2-8a25-4d54-a979-25ae779d2465"),"My birthday",
-                        Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao")));
+        ShoppingListResource shopList1 = new ShoppingListResource("List 1");
+        shopList1.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
+
+        ShoppingListResource shopList2 = new ShoppingListResource("List 2");
+        shopList2.setIngredients(Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao"));
+
+        return Arrays.asList(shopList1, shopList2);
     }
 
 }
