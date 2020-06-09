@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailId;
+import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
 import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingList;
 import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
