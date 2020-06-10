@@ -49,11 +49,7 @@ public class ShoppingListController {
     }
 
     public ShoppingListResource newShopList(String name){
-        ShoppingListResource shoppingList = new ShoppingListResource(name);
-        shoppingList.setShoppingListId("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915");
-        shoppingList.setName(name);
-
-        return shoppingList;
+        return new ShoppingListResource(name);
     }
 
     public ShoppingListResource getDummyShopList(UUID shoppingListId){

@@ -1,10 +1,8 @@
 package com.ezgroceries.shoppinglist.cocktail.controllers;
 
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBResponse;
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailResource;
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBClient;
 import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;

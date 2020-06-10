@@ -1,119 +1,83 @@
 package com.ezgroceries.shoppinglist.web.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
-import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingList;
-import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
 @WebMvcTest(ShoppingListController.class)
-@AutoConfigureDataJpa
+@AutoConfigureMockMvc
 public class ShoppingListControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ShoppingListController shoppingListController;
-
     @Test
     public void createShoppingList() throws Exception{
-        ShoppingListResource shopList = new ShoppingListResource("My List");
-
-        given(shoppingListController.createShopList(any(ShoppingList.class)))
-                .willReturn(shopList);
-
-        mockMvc.perform(post("/shopping-lists")
+        this.mockMvc.perform(post("/shopping-lists")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(shopList)))
+                    .content("{\"name\": \"Stephanie's birthday\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("name").value("My List"));
-
-        verify(shoppingListController).createShopList(any(ShoppingList.class));
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.shoppingListId").exists());
 
     }
 
     @Test
     public void showAllLists() throws Exception {
-        List<ShoppingListResource> shopList = new ArrayList<>();
-        ShoppingListResource listSteph = new ShoppingListResource("Stephanie's birthday");
-        listSteph.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
-        shopList.add(listSteph);
-        ShoppingListResource listTwo = new ShoppingListResource("My birthday");
-        listTwo.setIngredients(Arrays.asList("Fanta", "Cola", "7up", "Lemon juice", "Blue Curacao"));
-        shopList.add(listTwo);
-
-        given(shoppingListController.getAllShoppingLists())
-                .willReturn(shopList);
-
-        mockMvc.perform(get("/shopping-lists")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(shopList)))
+         mockMvc.perform(get("/shopping-lists")
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$[0].shoppingListId").exists())
+            .andExpect(jsonPath("$[0].name").exists())
+            .andExpect(jsonPath("$[0].ingredients").exists())
+            .andExpect(jsonPath("$[0].ingredients").isArray());
 
-        verify(shoppingListController).getAllShoppingLists();
     }
 
     @Test
     public void getOneList() throws Exception {
-        ShoppingListResource listSteph = new ShoppingListResource("Stephanie's birthday");
-        listSteph.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
 
-        given(shoppingListController.getShopList(any(UUID.class)))
-                .willReturn(listSteph);
 
-        mockMvc.perform(get("/shopping-lists/{shopListId}",UUID.randomUUID())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(listSteph)))
+        this.mockMvc.perform(get("/shopping-lists/eb18bb7c-61f3-4c9f-981c-55b1b8ee8915")
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("shoppingListId").exists())
-                .andExpect(jsonPath("name").value("Stephanie's birthday"))
-                .andExpect(jsonPath("ingredients").exists());
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.shoppingListId").exists())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.ingredients").exists())
+                .andExpect(jsonPath("$.ingredients").isArray());
 
-        verify(shoppingListController).getShopList(any(UUID.class));
     }
-/*
+
     @Test
     public void addCocktailToList() throws Exception{
-        List<CocktailId> cocktailIdList = new ArrayList<>();
-        CocktailId firstCocktail = new CocktailId();
-        firstCocktail.setCocktailId(UUID.randomUUID());
-        cocktailIdList.add(firstCocktail);
-
-        given(shoppingListController.addCocktailstoShopList(any(UUID.class),cocktailIdList))
-           .willReturn(cocktailIdList);
-
-        mockMvc.perform(post("/shopping-lists/{shopListId}/cocktails/",UUID.randomUUID())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(cocktailIdList)))
+        this.mockMvc.perform(post("/shopping-lists/97c8e5bd-5353-426e-b57b-69eb2260ace3/cocktails")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("[\n"
+                        + "  {\n"
+                        + "    \"cocktailId\": \"23b3d85a-3928-41c0-a533-6538a71e17c4\"\n"
+                        + "  },\n"
+                        + "  {\n"
+                        + "    \"cocktailId\": \"d615ec78-fe93-467b-8d26-5d26d8eab073\"\n"
+                        + "  }\n"
+                        + "]"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("cocktailId").exists());
-
-        verify(shoppingListController).addCocktailstoShopList(any(UUID.class),cocktailIdList);
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].cocktailId").exists());
     }
-*/
+
 
     protected static String asJsonString(final Object obj) {
         try {
