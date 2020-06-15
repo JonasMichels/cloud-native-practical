@@ -8,8 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ezgroceries.shoppinglist.cocktail.controllers.CocktailController;
+import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBClient;
+import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBResponse;
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBResponse.DrinkResource;
 import com.ezgroceries.shoppinglist.cocktail.resources.CocktailResource;
+import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +62,6 @@ public class CocktailControllerTest {
         drinkResource2.setStrIngredient4("Salt");
         CocktailResource cocktail2 = new CocktailResource(drinkResource2);
         cocktails.add(cocktail2);
-
-
 
         given(cocktailController.get(any(String.class)))
                 .willReturn(cocktails);
