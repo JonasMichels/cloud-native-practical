@@ -1,7 +1,6 @@
-package com.ezgroceries.shoppinglist.cocktail.resources;
+package com.ezgroceries.shoppinglist.cocktail.contract;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.ezgroceries.shoppinglist.external.CocktailDBResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,10 +14,7 @@ public class CocktailResource extends Cocktail{
 
     public CocktailResource(CocktailDBResponse.DrinkResource drinkResource) {
         super(drinkResource.getStrDrink(), drinkResource.getStrGlass(), drinkResource.getStrInstructions(),drinkResource.getStrDrinkThumb(),
-                Arrays.asList(drinkResource.getStrIngredient1(),drinkResource.getStrIngredient2(),drinkResource.getStrIngredient3(),drinkResource.getStrIngredient4(),
-                        drinkResource.getStrIngredient5(),drinkResource.getStrIngredient6(),drinkResource.getStrIngredient7(),drinkResource.getStrIngredient8(),
-                        drinkResource.getStrIngredient9(),drinkResource.getStrIngredient10(),drinkResource.getStrIngredient11(),drinkResource.getStrIngredient12(),
-                        drinkResource.getStrIngredient13(),drinkResource.getStrIngredient14(),drinkResource.getStrIngredient15()));
+                drinkResource.getIngredients());
         this.cocktailId = UUID.randomUUID();
     }
 

@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktail.resources;
+package com.ezgroceries.shoppinglist.cocktail.contract;
 
 public class Ingredient {
     private String name;

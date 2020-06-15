@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktail.resources;
+package com.ezgroceries.shoppinglist.cocktail.contract;
 
 import java.util.List;
 

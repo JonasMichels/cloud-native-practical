@@ -7,11 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.ezgroceries.shoppinglist.cocktail.controllers.CocktailController;
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBClient;
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBResponse;
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailDBResponse.DrinkResource;
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailResource;
+import com.ezgroceries.shoppinglist.external.CocktailDBResponse.DrinkResource;
+import com.ezgroceries.shoppinglist.cocktail.contract.CocktailResource;
 import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
 import java.util.ArrayList;
@@ -32,7 +29,7 @@ public class CocktailControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CocktailController cocktailController;
+    private CocktailService cocktailService;
 
     @Test
     public void getCocktails() throws Exception {
@@ -63,7 +60,7 @@ public class CocktailControllerTest {
         CocktailResource cocktail2 = new CocktailResource(drinkResource2);
         cocktails.add(cocktail2);
 
-        given(cocktailController.get(any(String.class)))
+        given(cocktailService.getCocktails(any(String.class)))
                 .willReturn(cocktails);
 
 
@@ -73,7 +70,7 @@ public class CocktailControllerTest {
         .andDo(print())
         .andExpect(status().isOk());
 
-        verify(cocktailController).get(any(String.class));
+        verify(cocktailService).getCocktails(any(String.class));
     }
 
 }

@@ -1,12 +1,14 @@
 package com.ezgroceries.shoppinglist.shoppingList.controllers;
 
-import com.ezgroceries.shoppinglist.cocktail.resources.CocktailId;
+import com.ezgroceries.shoppinglist.cocktail.contract.CocktailId;
+import com.ezgroceries.shoppinglist.cocktail.contract.CocktailResource;
 import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingList;
 import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
+import com.ezgroceries.shoppinglist.shoppingList.service.ShoppingListService;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,57 +22,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(produces = "application/json")
 public class ShoppingListController {
 
+    @Autowired
+    private ShoppingListService shoppingListService;
+
     @PostMapping(value="/shopping-lists")
     @ResponseStatus(HttpStatus.CREATED)
     public ShoppingListResource createShopList(@RequestBody ShoppingList shoppingList) {
-        ShoppingListResource newShopList = newShopList(shoppingList.getName());
+        ShoppingListResource newShopList = new ShoppingListResource(shoppingList.getName());
 
-        return newShopList;
+        return shoppingListService.newShopList(newShopList);
     }
 
     @PostMapping(value = "/shopping-lists/{shopListId}/cocktails")
     @ResponseStatus(HttpStatus.CREATED)
     public List<CocktailId> addCocktailstoShopList(@PathVariable("shopListId") UUID shopListId, @RequestBody List<CocktailId> cocktailIds){
-        return cocktailIds;
+        ShoppingListResource shoppingList = shoppingListService.getShoppingList(shopListId);
+        List<CocktailId> cocktails = new ArrayList<>();
+        for (CocktailId cocktailId : cocktailIds ) {
+            CocktailResource cocktailResource = shoppingListService.addOneCocktailToShoppingList(shoppingList, cocktailId.toString());
+            cocktails.add(new CocktailId(cocktailResource.getCocktailId()));
+        }
+
+        return cocktails;
     }
 
     @GetMapping(value = "/shopping-lists/{shopListId}")
-    public ShoppingList getShopList(@PathVariable("shopListId") UUID shopListID) {
+    public ShoppingListResource getShopList(@PathVariable("shopListId") UUID shopListID) {
 
-        return getDummyShopList(shopListID);
+        return shoppingListService.getShoppingList(shopListID);
 
     }
 
     @GetMapping(value="/shopping-lists")
     public List<ShoppingListResource> getAllShoppingLists() {
 
-        return getAllDummyShoppingLists();
+        return shoppingListService.getAllShoppingLists();
 
     }
 
-    public ShoppingListResource newShopList(String name){
-        return new ShoppingListResource(name);
-    }
-
-    public ShoppingListResource getDummyShopList(UUID shoppingListId){
-        ShoppingListResource oneShopList = new ShoppingListResource("Stephanie's birthday");
-        oneShopList.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Cola Zero"));
-        return oneShopList;
-
-
-    }
-
-    public List<ShoppingListResource> getAllDummyShoppingLists(){
-        List<ShoppingListResource> shoppingList = new ArrayList<>();
-        ShoppingListResource shopList1 = new ShoppingListResource("List 1");
-        shopList1.setIngredients(Arrays.asList("Tequila", "Triple Sec", "Lime Juice", "Salt", "Blue Curacao"));
-        shoppingList.add(shopList1);
-
-        ShoppingListResource shopList2 = new ShoppingListResource("List 2");
-        shopList2.setIngredients(Arrays.asList("Tequila", "Triple sec", "Lime juice", "Salt", "Blue Curacao"));
-        shoppingList.add(shopList2);
-
-        return shoppingList;
-    }
 
 }

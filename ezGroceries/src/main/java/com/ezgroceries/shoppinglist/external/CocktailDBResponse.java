@@ -1,6 +1,8 @@
-package com.ezgroceries.shoppinglist.cocktail.resources;
+package com.ezgroceries.shoppinglist.external;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CocktailDBResponse {
@@ -348,6 +350,14 @@ public class CocktailDBResponse {
 
         public void setDateModified(String dateModified) {
             this.dateModified = dateModified;
+        }
+
+        public List<String> getIngredients() {
+            List<String> ingredients = new ArrayList<>(Arrays.asList(strIngredient1, strIngredient2, strIngredient3, strIngredient4,
+                    strIngredient5, strIngredient6, strIngredient7, strIngredient8, strIngredient9, strIngredient10, strIngredient11,
+                    strIngredient12, strIngredient13, strIngredient14, strIngredient15));
+
+            return ingredients;
         }
     }
 
