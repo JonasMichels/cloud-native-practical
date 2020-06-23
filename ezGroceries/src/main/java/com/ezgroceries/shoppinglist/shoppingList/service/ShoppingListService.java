@@ -39,7 +39,7 @@ public class ShoppingListService {
     }
 
     public ShoppingListResource getShoppingList(UUID shoppingListId){
-        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByEntityId(shoppingListId);
+        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByShoppingListId(shoppingListId);
         ShoppingListResource shoppingListResource = new ShoppingListResource(shoppingListEntity.getShoppingListName());
         shoppingListResource.setShoppingListId(shoppingListEntity.getShoppingListId());
         return shoppingListResource;
@@ -55,7 +55,7 @@ public class ShoppingListService {
     }
 
     public List<CocktailId> addCocktailsToShoppingList (UUID shoppingListId, List<CocktailId> cocktailIds) {
-        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByEntityId(shoppingListId);
+        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByShoppingListId(shoppingListId);
         if (shoppingListEntity != null) {
                 List<CocktailId> addedCocktails = shoppingListEntity.getCocktails().stream()
                         .map(cocktail -> new CocktailId(cocktail.getCocktailId())).collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class ShoppingListService {
             shoppingListRepository.save(shoppingListEntity);
         }
 
-        return shoppingListRepository.findByEntityId(shoppingListId).getCocktails().stream()
+        return shoppingListRepository.findByShoppingListId(shoppingListId).getCocktails().stream()
                 .map(entity -> new CocktailId(entity.getCocktailId())).collect(Collectors.toList());
     }
 

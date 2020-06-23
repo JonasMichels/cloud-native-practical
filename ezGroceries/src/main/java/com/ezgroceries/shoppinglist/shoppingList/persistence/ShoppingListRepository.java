@@ -8,7 +8,7 @@ import org.springframework.data.repository.Repository;
 public interface ShoppingListRepository extends Repository<ShoppingListEntity, UUID> {
     ShoppingListEntity save(ShoppingListEntity shoppingListEntity);
 
-    ShoppingListEntity findByEntityId(UUID shoppingListId);
+    ShoppingListEntity findByShoppingListId(UUID shoppingListId);
 
     List<ShoppingListEntity> findAll();
 

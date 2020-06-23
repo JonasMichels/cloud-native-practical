@@ -7,10 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.ezgroceries.shoppinglist.cocktail.controllers.CocktailController;
 import com.ezgroceries.shoppinglist.cocktail.service.external.CocktailDBResponse.DrinkResource;
 import com.ezgroceries.shoppinglist.cocktail.controllers.contract.CocktailResource;
 import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
-import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ShoppingListController.class)
+@WebMvcTest(CocktailController.class)
 @AutoConfigureDataJpa
 public class CocktailControllerTest {
 
