@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.shoppingList.contract;
+package com.ezgroceries.shoppinglist.shoppingList.controllers.contract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

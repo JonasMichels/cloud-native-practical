@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktail.contract;
+package com.ezgroceries.shoppinglist.cocktail.persistence;
 
 import com.ezgroceries.shoppinglist.util.StringSetConverter;
 import java.util.Set;
@@ -25,6 +25,13 @@ public class CocktailEntity {
 
     @Convert(converter = StringSetConverter.class)
     private Set<String> ingredients;
+
+    public CocktailEntity() {
+    }
+
+    public CocktailEntity(UUID cocktailId) {
+        this.cocktailId = cocktailId;
+    }
 
     public UUID getCocktailId() {
         return cocktailId;

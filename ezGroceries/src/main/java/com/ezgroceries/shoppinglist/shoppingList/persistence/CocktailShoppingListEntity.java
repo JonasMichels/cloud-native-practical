@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktailsInShoppingList.contract;
+package com.ezgroceries.shoppinglist.shoppingList.persistence;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -14,11 +14,11 @@ import javax.persistence.Table;
 public class CocktailShoppingListEntity implements Serializable {
 
     @Id
-    @Column(name="COCKTAIL_ID")
+    @Column(name = "COCKTAIL_ID")
     private UUID cocktailId;
 
     @Id
-    @Column(name="SHOPPING_LIST_ID")
+    @Column(name = "SHOPPING_LIST_ID")
     private UUID shoppingListId;
 
     public UUID getCocktailId() {
@@ -36,4 +36,5 @@ public class CocktailShoppingListEntity implements Serializable {
     public void setShoppingListId(UUID shoppingListId) {
         this.shoppingListId = shoppingListId;
     }
+
 }

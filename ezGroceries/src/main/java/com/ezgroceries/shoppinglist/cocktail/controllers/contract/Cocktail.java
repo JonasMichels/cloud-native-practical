@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktail.contract;
+package com.ezgroceries.shoppinglist.cocktail.controllers.contract;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.cocktail.contract;
+package com.ezgroceries.shoppinglist.cocktail.controllers.contract;
 
 import java.util.UUID;
 
@@ -6,8 +6,8 @@ public class CocktailId {
 
     private UUID cocktailId;
 
-    public CocktailId(String cocktailId) {
-        this.cocktailId = UUID.fromString(cocktailId);
+    public CocktailId(UUID cocktailId) {
+        this.cocktailId = cocktailId;
     }
 
     public UUID getCocktailId() {

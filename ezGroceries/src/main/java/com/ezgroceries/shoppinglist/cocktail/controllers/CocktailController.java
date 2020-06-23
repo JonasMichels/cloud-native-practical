@@ -1,6 +1,6 @@
 package com.ezgroceries.shoppinglist.cocktail.controllers;
 
-import com.ezgroceries.shoppinglist.cocktail.contract.CocktailResource;
+import com.ezgroceries.shoppinglist.cocktail.controllers.contract.CocktailResource;
 import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

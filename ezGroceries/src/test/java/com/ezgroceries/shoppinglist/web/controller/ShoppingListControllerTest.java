@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
+import com.ezgroceries.shoppinglist.shoppingList.controllers.contract.ShoppingListResource;
 import com.ezgroceries.shoppinglist.shoppingList.controllers.ShoppingListController;
 import com.ezgroceries.shoppinglist.shoppingList.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;

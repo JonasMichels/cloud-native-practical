@@ -1,11 +1,11 @@
 package com.ezgroceries.shoppinglist.cocktail.service;
 
-import com.ezgroceries.shoppinglist.external.CocktailDBResponse.DrinkResource;
-import com.ezgroceries.shoppinglist.cocktail.repository.CocktailRepository;
-import com.ezgroceries.shoppinglist.external.CocktailDBClient;
-import com.ezgroceries.shoppinglist.external.CocktailDBResponse;
-import com.ezgroceries.shoppinglist.cocktail.contract.CocktailEntity;
-import com.ezgroceries.shoppinglist.cocktail.contract.CocktailResource;
+import com.ezgroceries.shoppinglist.cocktail.service.external.CocktailDBResponse.DrinkResource;
+import com.ezgroceries.shoppinglist.cocktail.persistence.CocktailRepository;
+import com.ezgroceries.shoppinglist.cocktail.service.external.CocktailDBClient;
+import com.ezgroceries.shoppinglist.cocktail.service.external.CocktailDBResponse;
+import com.ezgroceries.shoppinglist.cocktail.persistence.CocktailEntity;
+import com.ezgroceries.shoppinglist.cocktail.controllers.contract.CocktailResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +27,8 @@ public class CocktailService {
     }
 
     public List<CocktailResource> getCocktails(String search) {
-        CocktailDBResponse cocktailResponse = cocktailDBClient.searchCocktails(search);
-         List<CocktailResource> cocktails = new ArrayList<>();
-        for (CocktailDBResponse.DrinkResource drink : cocktailResponse.getDrinks()){
-            cocktails.add(new CocktailResource(drink));
-        }
+        return mergeCocktails(cocktailDBClient.searchCocktails(search).getDrinks());
 
-        return cocktails;
     }
 
     public CocktailResource getCocktailById(String cocktailId) {
@@ -73,6 +68,10 @@ public class CocktailService {
     private List<CocktailResource> mergeAndTransform(List<CocktailDBResponse.DrinkResource> drinks, Map<String, CocktailEntity> allEntityMap) {
         return drinks.stream().map(drinkResource -> new CocktailResource(allEntityMap.get(drinkResource.getIdDrink()).getCocktailId(), drinkResource.getStrDrink(), drinkResource.getStrGlass(),
                 drinkResource.getStrInstructions(), drinkResource.getStrDrinkThumb(), drinkResource.getIngredients())).collect(Collectors.toList());
+    }
+
+    public List<CocktailEntity> getAllById(List<String> cocktails) {
+        return cocktailRepository.findAllById(cocktails.stream().map(UUID::fromString).collect(Collectors.toList()));
     }
 
 }

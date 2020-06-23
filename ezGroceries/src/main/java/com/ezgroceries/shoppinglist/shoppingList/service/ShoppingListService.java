@@ -1,15 +1,18 @@
 package com.ezgroceries.shoppinglist.shoppingList.service;
 
-import com.ezgroceries.shoppinglist.cocktail.contract.CocktailResource;
+import com.ezgroceries.shoppinglist.cocktail.controllers.contract.CocktailId;
+import com.ezgroceries.shoppinglist.cocktail.controllers.contract.CocktailResource;
+import com.ezgroceries.shoppinglist.cocktail.persistence.CocktailEntity;
 import com.ezgroceries.shoppinglist.cocktail.service.CocktailService;
-import com.ezgroceries.shoppinglist.cocktailsInShoppingList.contract.CocktailShoppingListEntity;
-import com.ezgroceries.shoppinglist.cocktailsInShoppingList.repository.CocktailShoppingListRepository;
-import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListEntity;
-import com.ezgroceries.shoppinglist.shoppingList.contract.ShoppingListResource;
-import com.ezgroceries.shoppinglist.shoppingList.repository.ShoppingListRepository;
+import com.ezgroceries.shoppinglist.shoppingList.persistence.CocktailShoppingListEntity;
+import com.ezgroceries.shoppinglist.shoppingList.persistence.CocktailShoppingListRepository;
+import com.ezgroceries.shoppinglist.shoppingList.persistence.ShoppingListEntity;
+import com.ezgroceries.shoppinglist.shoppingList.controllers.contract.ShoppingListResource;
+import com.ezgroceries.shoppinglist.shoppingList.persistence.ShoppingListRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +21,11 @@ public class ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
     private final CocktailService cocktailService;
-    private final CocktailShoppingListRepository cocktailShoppingListRepository;
 
     @Autowired
-    public ShoppingListService(ShoppingListRepository shoppingListRepository, CocktailShoppingListRepository cocktailShoppingListRepository, CocktailService cocktailService) {
+    public ShoppingListService(ShoppingListRepository shoppingListRepository, CocktailService cocktailService) {
 
         this.shoppingListRepository = shoppingListRepository;
-        this.cocktailShoppingListRepository = cocktailShoppingListRepository;
         this.cocktailService = cocktailService;
 
     }
@@ -38,7 +39,7 @@ public class ShoppingListService {
     }
 
     public ShoppingListResource getShoppingList(UUID shoppingListId){
-        ShoppingListEntity shoppingListEntity = shoppingListRepository.getOne(shoppingListId);
+        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByEntityId(shoppingListId);
         ShoppingListResource shoppingListResource = new ShoppingListResource(shoppingListEntity.getShoppingListName());
         shoppingListResource.setShoppingListId(shoppingListEntity.getShoppingListId());
         return shoppingListResource;
@@ -53,22 +54,21 @@ public class ShoppingListService {
         return shoppingLists;
     }
 
-    public List<CocktailResource> addcocktailsToShoppinglist(ShoppingListResource shoppingListResource, List<String> cocktailIds) {
-        List<CocktailResource> cocktails = new ArrayList<>();
-        for (String cocktailId : cocktailIds) {
-            cocktails.add(addOneCocktailToShoppingList(shoppingListResource, cocktailId));
+    public List<CocktailId> addCocktailsToShoppingList (UUID shoppingListId, List<CocktailId> cocktailIds) {
+        ShoppingListEntity shoppingListEntity = shoppingListRepository.findByEntityId(shoppingListId);
+        if (shoppingListEntity != null) {
+                List<CocktailId> addedCocktails = shoppingListEntity.getCocktails().stream()
+                        .map(cocktail -> new CocktailId(cocktail.getCocktailId())).collect(Collectors.toList());
+
+            for (CocktailId cocktailId : cocktailIds) {
+                shoppingListEntity.addCocktail(new CocktailEntity(cocktailId.getCocktailId()));
+            }
+            shoppingListRepository.save(shoppingListEntity);
         }
 
-        return cocktails;
+        return shoppingListRepository.findByEntityId(shoppingListId).getCocktails().stream()
+                .map(entity -> new CocktailId(entity.getCocktailId())).collect(Collectors.toList());
     }
 
-    public CocktailResource addOneCocktailToShoppingList(ShoppingListResource shoppingListResource, String cocktailId){
-        CocktailResource cocktailResource = cocktailService.getCocktailById(cocktailId);
-        CocktailShoppingListEntity cocktailShoppingListEntity = new CocktailShoppingListEntity();
-        cocktailShoppingListEntity.setCocktailId(UUID.fromString(cocktailResource.getCocktailId()));
-        cocktailShoppingListEntity.setShoppingListId(shoppingListResource.getShoppingListId());
-        cocktailShoppingListRepository.save(cocktailShoppingListEntity);
-        return cocktailResource;
-    }
 
 }
